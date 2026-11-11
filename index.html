@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Word Fun! เกมศัพท์ภาษาอังกฤษ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@500;700&display=swap">
+<style>
+:root{--bg:#fff7e0;--card:#fff;--ink:#3b2f5c;--sub:#7a6f99;--brand:#7c5cff;--good:#2fbf71;--bad:#ff6b6b;--shadow:rgba(60,40,120,.15);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241c3d;--card:#352b57;--ink:#fff6e6;--sub:#c3b9e6;--shadow:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#241c3d;--card:#352b57;--ink:#fff6e6;--sub:#c3b9e6;--shadow:rgba(0,0,0,.4)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Mali","Sarabun","Noto Sans Thai",system-ui,sans-serif;min-height:100vh}
+#app{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:30px;margin:8px 0 2px;text-align:center}
+.sub{text-align:center;color:var(--sub);margin:0 0 16px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.btn{border:0;border-radius:18px;padding:12px 18px;font:inherit;font-weight:700;font-size:17px;color:#fff;background:var(--brand);box-shadow:0 4px 0 var(--shadow);cursor:pointer}
+.btn:active{transform:translateY(2px)}
+.btn.alt{background:var(--card);color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cat{border:0;border-radius:22px;padding:18px 8px;font:inherit;color:#fff;font-weight:700;font-size:19px;box-shadow:0 5px 0 var(--shadow);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cat .e{font-size:44px}.cat small{font-weight:500;font-size:14px;opacity:.95}
+.cat .st{font-size:13px;background:rgba(255,255,255,.28);border-radius:12px;padding:2px 10px}
+.card{background:var(--card);border-radius:22px;padding:14px 8px;text-align:center;box-shadow:0 4px 0 var(--shadow);border:0;font:inherit;color:var(--ink);cursor:pointer}
+.card:active{transform:scale(.97)}
+.pic{font-size:56px;line-height:1.2;display:flex;justify-content:center;align-items:center;height:70px}
+.dot{width:58px;height:58px;border-radius:50%;border:3px solid rgba(0,0,0,.15)}
+.en{font-size:22px;font-weight:700}.th{font-size:14px;color:var(--sub)}
+.q{background:var(--card);border-radius:24px;padding:18px;text-align:center;box-shadow:0 4px 0 var(--shadow);margin-bottom:14px}
+.q .pic{font-size:84px;height:100px}.q .dot{width:90px;height:90px}
+.opt{font-size:22px;font-weight:700;padding:16px 8px}
+.opt.good{background:var(--good);color:#fff}.opt.bad{background:var(--bad);color:#fff}
+.bar{height:12px;background:var(--card);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.bar i{display:block;height:100%;background:var(--brand);transition:width .3s}
+.big{font-size:70px;text-align:center}.center{text-align:center}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var CATS=[
+{id:"kitchen",en:"Kitchen",th:"ห้องครัว",e:"🍳",c:"#ff8a3d",w:[["pan","กระทะ","🍳"],["fork","ส้อม","🍴"],["spoon","ช้อน","🥄"],["knife","มีด","🔪"],["bowl","ชาม","🥣"],["plate","จาน","🍽️"],["cup","ถ้วย / แก้ว","☕"],["pot","หม้อ","🍲"]]},
+{id:"bedroom",en:"Bedroom",th:"ห้องนอน",e:"🛏️",c:"#5b8def",w:[["bed","เตียง","🛏️"],["lamp","โคมไฟ","💡"],["clock","นาฬิกา","⏰"],["teddy bear","ตุ๊กตาหมี","🧸"],["window","หน้าต่าง","🪟"],["door","ประตู","🚪"],["book","หนังสือ","📚"],["shoes","รองเท้า","👟"]]},
+{id:"bathroom",en:"Bathroom",th:"ห้องน้ำ",e:"🛁",c:"#1fb5ad",w:[["toilet","ชักโครก","🚽"],["shower","ฝักบัว","🚿"],["bathtub","อ่างอาบน้ำ","🛁"],["soap","สบู่","🧼"],["toothbrush","แปรงสีฟัน","🪥"],["sponge","ฟองน้ำ","🧽"],["mirror","กระจก","🪞"],["bucket","ถัง","🪣"]]},
+{id:"living",en:"Living Room",th:"ห้องนั่งเล่น",e:"🛋️",c:"#e9609b",w:[["sofa","โซฟา","🛋️"],["TV","ทีวี","📺"],["chair","เก้าอี้","🪑"],["plant","ต้นไม้","🪴"],["picture","รูปภาพ","🖼️"],["telephone","โทรศัพท์","☎️"],["radio","วิทยุ","📻"],["fan","พัดลม","🌀"]]},
+{id:"colors",en:"Colors",th:"สี",e:"🎨",c:"#9b59d0",w:[["red","สีแดง","#e53935"],["blue","สีน้ำเงิน / ฟ้า","#1e6fe0"],["yellow","สีเหลือง","#fdd835"],["green","สีเขียว","#43a047"],["orange","สีส้ม","#fb8c00"],["purple","สีม่วง","#8e24aa"],["pink","สีชมพู","#f48fb1"],["black","สีดำ","#222"],["white","สีขาว","#fff"],["brown","สีน้ำตาล","#795548"]]}
+];
+var app=document.getElementById("app"),stars={};
+try{stars=JSON.parse(localStorage.getItem("wf_stars")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("wf_stars",JSON.stringify(stars))}catch(e){}}
+function say(t){try{var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function pic(w){return w[2].charAt(0)==="#"?'<div class="dot" style="background:'+w[2]+'"></div>':w[2]}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function cat(id){return CATS.filter(function(c){return c.id===id})[0]}
+
+function home(){
+ var h='<h1>🌈 Word Fun!</h1><p class="sub">เลือกหมวดคำศัพท์แล้วมาเล่นกัน</p><div class="grid">';
+ CATS.forEach(function(c){var s=stars[c.id]||0;h+='<button class="cat" style="background:'+c.c+'" onclick="menu(\''+c.id+'\')"><span class="e">'+c.e+'</span>'+c.en+'<small>'+c.th+'</small><span class="st">⭐ '+s+'</span></button>'});
+ h+='<button class="cat" style="background:#444" onclick="mix()"><span class="e">🎲</span>Mix<small>สุ่มทุกหมวด</small></button></div>';
+ app.innerHTML=h;
+}
+function menu(id){
+ var c=cat(id);
+ app.innerHTML='<div class="top"><button class="btn alt" onclick="home()">⬅ กลับ</button><b>'+c.e+' '+c.en+'</b><span></span></div>'+
+ '<div class="center"><div class="big">'+c.e+'</div><h1>'+c.en+'</h1><p class="sub">'+c.th+'</p></div>'+
+ '<div class="row" style="flex-direction:column"><button class="btn" onclick="learn(\''+id+'\')">📖 เรียนรู้คำศัพท์</button><button class="btn" style="background:#ff8a3d" onclick="quiz(\''+id+'\')">🎮 เล่นเกมทายคำ</button></div>';
+}
+function learn(id){
+ var c=cat(id),h='<div class="top"><button class="btn alt" onclick="menu(\''+id+'\')">⬅ กลับ</button><b>'+c.en+'</b><span></span></div><p class="sub">👆 แตะการ์ดเพื่อฟังเสียง</p><div class="grid">';
+ c.w.forEach(function(w,i){h+='<button class="card" onclick="say(\''+w[0]+'\')"><div class="pic">'+pic(w)+'</div><div class="en">'+w[0]+' 🔊</div><div class="th">'+w[1]+'</div></button>'});
+ h+='</div><div class="row"><button class="btn" style="background:#ff8a3d" onclick="quiz(\''+id+'\')">🎮 เล่นเกม</button></div>';
+ app.innerHTML=h;
+}
+var G;
+function mix(){var all=[];CATS.forEach(function(c){c.w.forEach(function(w){all.push(w)})});start("mix",all)}
+function quiz(id){start(id,cat(id).w)}
+function start(id,pool){G={id:id,pool:pool,qs:shuffle(pool).slice(0,8),i:0,score:0};ask()}
+function back(){G.id==="mix"?home():menu(G.id)}
+function ask(){
+ if(G.i>=G.qs.length)return end();
+ var w=G.qs[G.i],hear=G.i%2===1,others=shuffle(G.pool.filter(function(x){return x[0]!==w[0]})).slice(0,3),opts=shuffle(others.concat([w]));
+ G.w=w;G.done=false;
+ var h='<div class="top"><button class="btn alt" onclick="back()">✖</button><b>ข้อ '+(G.i+1)+'/'+G.qs.length+'</b><b>⭐ '+G.score+'</b></div><div class="bar"><i style="width:'+(G.i/G.qs.length*100)+'%"></i></div>';
+ if(hear){h+='<div class="q"><p class="sub">ฟังแล้วเลือกรูปที่ถูกต้อง</p><button class="btn" style="font-size:30px" onclick="say(\''+w[0]+'\')">🔊 ฟังอีกครั้ง</button></div><div class="grid">';
+  opts.forEach(function(o){h+='<button class="card" data-w="'+o[0]+'" onclick="pick(this,\''+o[0]+'\')"><div class="pic">'+pic(o)+'</div></button>'})}
+ else{h+='<div class="q"><p class="sub">รูปนี้ภาษาอังกฤษคืออะไร?</p><div class="pic">'+pic(w)+'</div><button class="btn alt" onclick="say(\''+w[0]+'\')">🔊 ฟังเสียง</button></div><div class="grid">';
+  opts.forEach(function(o){h+='<button class="card opt" data-w="'+o[0]+'" onclick="pick(this,\''+o[0]+'\')">'+o[0]+'</button>'})}
+ app.innerHTML=h+'</div>';
+ if(hear)setTimeout(function(){say(w[0])},300);
+}
+function pick(el,name){
+ if(G.done)return;G.done=true;
+ var ok=name===G.w[0];
+ if(ok){G.score++;el.classList.add("good")}else{el.classList.add("bad");var r=app.querySelector('[data-w="'+G.w[0]+'"]');if(r)r.classList.add("good")}
+ say(G.w[0]);
+ var box=app.querySelector(".q");box.insertAdjacentHTML("beforeend",'<p class="en" style="color:'+(ok?'var(--good)':'var(--bad)')+'">'+(ok?"🎉 เก่งมาก!":"👍 ไม่เป็นไร ลองใหม่ข้อต่อไป")+'<br>'+G.w[0]+' = '+G.w[1]+'</p>');
+ setTimeout(function(){G.i++;ask()},1700);
+}
+function end(){
+ var s=G.score,n=G.qs.length,m=s>=n-1?"🏆":s>=n/2?"😄":"💪";
+ if(s>(stars[G.id]||0)){stars[G.id]=s;save()}
+ app.innerHTML='<div class="center"><div class="big">'+m+'</div><h1>ได้ '+s+' / '+n+' ข้อ</h1><p class="sub">'+(s>=n-1?"สุดยอดไปเลย!":s>=n/2?"เก่งมาก ลองอีกครั้งให้ได้เต็ม!":"สู้ ๆ นะ ลองเรียนรู้อีกรอบ แล้วมาเล่นใหม่")+'</p></div><div class="row"><button class="btn" onclick="start(G.id,G.pool)">🔁 เล่นอีกครั้ง</button><button class="btn alt" onclick="home()">🏠 หน้าหลัก</button></div>';
+}
+home();
+</script>
+</body>
+</html>
